@@ -76,13 +76,18 @@ for res in result:
     texto=re.sub(r"[^a-zA-Z0-9]"," ",texto)
     todos.append(texto)
 
-from googletrans import Translator, constants
+from googletrans import Translator
 translator = Translator()
 
 print(todos)
 df = pd.DataFrame(todos, columns=['es'])
 print(df )
 
-df["en"] = df["es"].apply(translator.translate, src='es', dest='en').apply(getattr, args=('text',)) 
+for i in df['es']:
+    try:
+        print(translator.translate(i).text)
+    except Exception:
+        print(Exception)
+
 
 #print(tb.sentiment)
