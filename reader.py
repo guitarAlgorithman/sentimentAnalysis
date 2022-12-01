@@ -79,15 +79,21 @@ for res in result:
 from googletrans import Translator
 translator = Translator()
 
-print(todos)
+#print(todos)
 df = pd.DataFrame(todos, columns=['es'])
-print(df )
-
+#print(df )
+traducidos=[]
+import nltk
+nltk.download('vader_lexicon')
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+vader = SentimentIntensityAnalyzer()
 for i in df['es']:
     try:
-        print(translator.translate(i).text)
+        traducidos.append(translator.translate(i).text)
     except Exception:
         print(Exception)
-
-
+df=pd.DataFrame(traducidos,columns=['en'])
+print(df)
+df["sen"] = df['en'].apply(vader.polarity_scores).tolist()
+print(df)
 #print(tb.sentiment)
