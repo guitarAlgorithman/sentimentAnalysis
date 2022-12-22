@@ -17,6 +17,7 @@ import unidecode
 import nltk
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import seaborn as sb
 
 
 def getSentimiento(busqueda):
@@ -66,11 +67,11 @@ def getSentimiento(busqueda):
 
 
     #cargo los elementos desde google news
-    news = GoogleNews(start='11/01/2022',end='11/29/2022',lang='es',encode='utf-8')
+    news = GoogleNews(start='11/01/2022',end='12/31/2022',lang='es',encode='utf-8')
     news.search(f"{busqueda}",)
     result = news.result()
     data = pd.DataFrame.from_dict(result)
-    data = data.drop(columns=["img"])
+    #data = data.drop(columns=["img"])
     data.head()
     for res in result:
         texto=res["title"]+" "+res["desc"]
@@ -84,18 +85,22 @@ def getSentimiento(busqueda):
 
     #print(todos)
     df = pd.DataFrame(todos, columns=['es'])
-    #print(df )
-    traducidos=[]
 
+    print(df)
+    traducidos=[]
+    originales=[]
     vader = SentimentIntensityAnalyzer()
     for i in df['es']:
         try:
             traducidos.append(translator.translate(i).text)
+            originales.append(i)
         except Exception:
+            print(i)
             print(Exception)
     df=pd.DataFrame(traducidos,columns=['en'])
-    print(df)
-    df["sen"] = df['en'].apply(vader.polarity_scores).tolist()
-    print(df)
-    return(df.to_json())
+    #print(df)
+    auxSen= df['en'].apply(vader.polarity_scores).tolist()
+    df=pd.DataFrame({'en':traducidos,'es':originales,'sen':auxSen})
+    #print(df)
+    return(df)
     #print(tb.sentiment)
