@@ -7,4 +7,4 @@ app = FastAPI()
 @app.get("/{busqueda}")
 async def root(busqueda):
     salida=getSentimiento(busqueda)
-    return salida.json()
+    return salida
